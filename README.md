@@ -189,6 +189,26 @@ pihole/
 - Enable **DNSSEC** for added security
 - Use **Groups** to manage filtering rules for different devices
 
+## 🛡️ Optional: Web Proxy Setup (Privoxy)
+
+This project includes **Privoxy** for additional web filtering. If you wish to use it, you must configure your device's browser or system settings to route traffic through the proxy.
+
+**Proxy Details:**
+- **Proxy IP:** `<Your-Local-Machine-IP>`
+- **Port:** `4747`
+
+### How to configure:
+
+#### Browser Setup (e.g., Firefox, Chrome/Edge via extensions)
+1. In your browser's proxy settings, set the **HTTP/HTTPS Proxy** to your machine's local IP.
+2. Set the port to `4747`.
+
+#### System-Wide (Linux/macOS)
+You can set the environment variables in your terminal:
+```bash
+export http_proxy=http://<YOUR_MACHINE_IP>:4747
+export https_proxy=http://<YOUR_MACHINE_IP>:4747
+```
 ## 📄 License
 
 Pi-hole is released under the EUPL 1.2 license. See the [official repository](https://github.com/pi-hole/pi-hole) for details.
