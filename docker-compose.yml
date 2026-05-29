@@ -1,0 +1,52 @@
+services:
+  pihole:
+    image: pihole/pihole:latest
+    container_name: pihole
+    hostname: pihole
+
+    # DNS & Web Interface Ports
+    ports:
+      - "53:53/tcp" # DNS TCP
+      - "53:53/udp" # DNS UDP
+      - "80:80/tcp" # Web interface HTTP
+      - "443:443/tcp" # Web interface HTTPS
+      # Uncomment below to enable DHCP (requires host network or special setup)
+      # - "67:67/udp"         # DHCP
+      # - "546:546/udp"       # DHCPv6
+
+      # Environment Variables (values come from .env file)
+    environment:
+      TZ: '${TZ:-UTC}'
+      # Pi-hole v6 uses FTLCONF_ prefix for all config
+      FTLCONF_webserver_api_password: '${WEBPASSWORD:-admin123}'
+      FTLCONF_dns_listeningMode: 'all'
+      FTLCONF_dns_queryLogging: '${QUERY_LOGGING:-true}'
+      FTLCONF_LOCAL_IPV4: '${FTLCONF_LOCAL_IPV4:-}'
+
+    # Volumes for persistent storage
+    volumes:
+      - ./etc-pihole:/etc/pihole
+      - ./etc-dnsmasq.d:/etc/dnsmasq.d
+
+    # Capabilities needed for DNS and DHCP
+    cap_add:
+      - NET_ADMIN
+
+    # Restart Policy
+    restart: unless-stopped
+
+    # Network
+    networks:
+      - pihole-network
+
+    # Health Check
+    healthcheck:
+      test: [ "CMD", "dig", "@127.0.0.1", "pi.hole" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  pihole-network:
+    driver: bridge
