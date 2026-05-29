@@ -1,0 +1,41 @@
+# Privoxy main configuration file
+# Docs: https://www.privoxy.org/user-manual/config.html
+
+# ── Network ────────────────────────────────────────────────
+# Listen on all interfaces so devices on the LAN can use it
+listen-address  0.0.0.0:8118
+
+# Forward DNS resolution through Pi-hole DNS
+# (Docker internal DNS handles this automatically via pihole-network)
+
+# ── Logging ────────────────────────────────────────────────
+logdir /var/log/privoxy
+logfile privoxy.log
+# Log levels: 1=request 2=connect 4=gimp 8=header 16=actions 32=filter
+debug 1
+
+# ── Action & Filter Files ──────────────────────────────────
+# Default Privoxy rules (ads, trackers, popups)
+actionsfile match-all.action    # Catch-all defaults
+actionsfile default.action      # Main Privoxy block list
+actionsfile user.action         # Our custom popup blocking rules
+
+filterfile default.filter       # Built-in filters
+filterfile user.filter          # Our custom popup JS filters
+
+# ── Privacy & Safety ──────────────────────────────────────
+# Strip tracking query parameters from URLs
+enable-remote-toggle  0
+enable-remote-http-toggle 0
+
+# Don't send referrer to cross-origin sites
+hide-referrer  forge
+
+# Remove common tracking headers
+hide-user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+
+# Suppress version in headers
+hide-proxy-signature 1
+
+# ── Timeouts ──────────────────────────────────────────────
+socket-timeout 300
